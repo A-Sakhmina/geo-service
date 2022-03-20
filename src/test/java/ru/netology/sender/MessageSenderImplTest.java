@@ -1,6 +1,6 @@
 package ru.netology.sender;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
@@ -16,6 +16,26 @@ import java.util.Map;
 import static org.mockito.ArgumentMatchers.any;
 
 class MessageSenderImplTest {
+
+    @BeforeEach
+    public void init() {
+        System.out.println("test started");
+    }
+
+    @BeforeAll
+    public static void started() {
+        System.out.println("started MessageSenderImplTest");
+    }
+
+    @AfterEach
+    public void finished() {
+        System.out.println("test completed");
+    }
+
+    @AfterAll
+    public static void finishedAll() {
+        System.out.println("tests completed");
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"172.", "172.0.32.11", "172.66.22.11"})
