@@ -11,8 +11,32 @@ import ru.netology.i18n.LocalizationService;
 import ru.netology.i18n.LocalizationServiceImpl;
 
 import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.any;
 
 class MessageSenderImplTest {
+
+    @ParameterizedTest
+    @ValueSource(strings = {"172.", "172.0.32.11", "172.66.22.11"})
+    public void testSendRus(String ip) {
+
+        String expected = "Добро пожаловать";
+        //arrange
+        Location location = Mockito.mock(Location.class);
+        Mockito.when(location.getCountry()).thenReturn(Country.RUSSIA);
+
+        GeoService geoService = Mockito.mock(GeoService.class);
+        Mockito.when(geoService.byIp(any())).thenReturn(location);
+
+        LocalizationService localizationService = new LocalizationServiceImpl();
+        MessageSender messageSender = new MessageSenderImpl(geoService, localizationService);
+        //act
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(MessageSenderImpl.IP_ADDRESS_HEADER, ip);
+        //assert
+        Assertions.assertEquals(expected, messageSender.send(headers));
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {"96.", "96.10.132.11", "96.44.183.149"})
@@ -24,14 +48,14 @@ class MessageSenderImplTest {
         Mockito.when(location.getCountry()).thenReturn(Country.USA);
 
         GeoService geoService = Mockito.mock(GeoService.class);
-        Mockito.when(geoService.byIp(Mockito.<String>any())).thenReturn(location);
+        Mockito.when(geoService.byIp(any())).thenReturn(location);
 
         LocalizationService localizationService = new LocalizationServiceImpl();
         MessageSender messageSender = new MessageSenderImpl(geoService, localizationService);
         //act
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put(MessageSenderImpl.IP_ADDRESS_HEADER, ip);
+        Map<String, String> headers = new HashMap<String, String>();
+        headers.put(MessageSenderImpl.IP_ADDRESS_HEADER, ip);
         //assert
-        Assertions.assertEquals(expected, messageSender.send(map));
+        Assertions.assertEquals(expected, messageSender.send(headers));
     }
 }
